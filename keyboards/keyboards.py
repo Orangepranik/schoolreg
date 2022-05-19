@@ -9,3 +9,8 @@ def returntomenu():
     buttons = ['Повернутися назад']
     statick_keyboard.add(*buttons)
     return statick_keyboard
+def yesornorequest():
+    statick_keyboard = types.ReplyKeyboardMarkup()
+    buttons = ['Так', 'Ні']
+    statick_keyboard.add(*buttons)
+    return statick_keyboard
