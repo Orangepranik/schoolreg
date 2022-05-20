@@ -13,6 +13,9 @@ dp = Dispatcher(bot, storage = storage)
 class apllicationforadmission(StatesGroup):
     name_and_surname = State()
     phonenumner = State()
+    addres_of_residence = State()
+    name_and_surname_of_incomming_user = State()
+    how_old_is_incomming = State()
 
 
 today = datetime.datetime.today()
@@ -61,30 +64,85 @@ async def requestyes(message: types.Message):
     await message.answer("Введіть ваш ПІБ:")
 
 @dp.message_handler(state=apllicationforadmission.name_and_surname)
-async def responsenameandsurname(message: types.Message, state = FSMContext):
+async def responsenameandsurname(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['name_and_surname'] = message.text
-    if len(data['name_and_surname'])>= 9:
+    if len(data['name_and_surname'])<= 9:
         await message.answer("Введіть ще раз ")
         await state.finish()
-    elif len(data['name_and_surname'])<= 9:
+    elif len(data['name_and_surname'])>= 9:
         async with state.proxy() as data:
             data['name_and_surname'] = message.text
+    await message.reply("Ваш ПІБ успішно записано")
     await apllicationforadmission.next()
     await message.answer("Введіть ваш номер телефону:\nЗаписувати у такому форматі: +380....\nПотрібно для того щоб ми змогли зв'язатися з вами")
 
 
-@dp.message_handler(apllicationforadmission.phonenumner)
+@dp.message_handler(state=apllicationforadmission.phonenumner)
 async def responsephonenumber(message: types.Message, state = FSMContext):
     async with state.proxy() as data1:
         data1['phonenumber'] = message.text
     replacephonenumber = data1['phonenumber'].replace("+380", '')
     lenphonenumber = len(replacephonenumber)
-    if lenphonenumber <= 10 and lenphonenumber >= 13:
+    if lenphonenumber <= 8 and lenphonenumber >= 13:
         await state.finish()
         await message.answer("Введіть корректно номер:\nПриклад:+380932439249239")
     else:
-        await message.answer("alo")
+        await message.reply("Ваш номер телефону успішно записано")
+        await message.answer("Введіть вашу адресу проживання")
+    await apllicationforadmission.next()
+
+
+@dp.message_handler(state=apllicationforadmission.addres_of_residence)
+async def requestlive(message: types.Message, state: FSMContext):
+    async with state.proxy() as data2:
+        data2['addres_of_residence'] = message.text
+    lenadress = len(data2['addres_of_residence'])
+    if lenadress >= 10 and lenadress <= 30:
+        async with state.proxy() as data2:
+            data2['addres_of_residence'] = message.text
+        await message.reply("Записано в анкету успішно")
+        await message.answer("Введіть ПІБ вступника:")
+        await apllicationforadmission.next()
+    else:
+        await state.finish()
+        await message.answer("Введіть адресу корректно")
+
+
+
+@dp.message_handler(state=apllicationforadmission.name_and_surname_of_incomming_user)
+async def requestincommingnameandsurname(message: types.Message, state: FSMContext):
+    async with state.proxy() as data3:
+        data3['name_and_surname_of_incomming_user'] = message.text
+    if len(data3['name_and_surname_of_incomming_user']) <= 9:
+        await message.answer("Введіть корректно ")
+        await state.finish()
+    elif len(data3['name_and_surname_of_incomming_user']) >= 9:
+        async with state.proxy() as data:
+            data3['name_and_surname_of_incomming_user'] = message.text
+    await message.reply("ПІБ вступника записано")
+    await message.answer('Введіть вік вступника\nПриклад: 15')
+    await apllicationforadmission.next()
+
+
+@dp.message_handler(state=apllicationforadmission.how_old_is_incomming)
+async def requestoldincomminguser(message: types.Message, state: FSMContext):
+    async with state.proxy() as data4:
+        data4['how_old_is_incomming']  = message.text
+    if int(data4['how_old_is_incomming']) <= 5 and int(data4['how_old_is_incomming']) >= 25:
+        await state.finish()
+        await message.answer('Введіть коректно вік\nПриклад: 15')
+    else:
+        async with state.proxy() as data4:
+            data4['how_old_is_incomming'] = message.text
+        await message.answer('Ви заповнили анкету\nАнкета відправлена до адміністраторів')
+    await message.answer(f"Ваша анкета:\nВаш ПІБ:{data4['name_and_surname']}"
+                         f"\nВаш номер телефону: {data4['phonenumber']}"
+                         f"Ваше місце проживання: {data4['addres_of_residence']}"
+                         f"ПІБ вступника: {data4['name_and_surname_of_incomming_user']}"
+                         f"Вік вступника: {data4['how_old_is_incomming']}"
+                         )
+    await state.finish()
 
 # @dp.message_handler(apllicationforadmission.name_and_surname)
 # async def responsenameandsurname(message: types.Message, state = FSMContext)
