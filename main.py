@@ -3,7 +3,7 @@ import types
 from databasesqlite3.database import *
 from importi.importi import *
 from keyboards.keyboards import *
-API_TOKEN = "5167652549:AAGyl0koDoRjeBlZPtQd2GFQnVEYGngHB0Q"
+API_TOKEN = ""
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN)
 storage=MemoryStorage()
