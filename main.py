@@ -60,7 +60,7 @@ async def requestyes(message: types.Message):
     await apllicationforadmission.name_and_surname.set()
     await message.answer("Введіть ваш ПІБ:")
 
-@dp.message_handler(apllicationforadmission.name_and_surname)
+@dp.message_handler(state=apllicationforadmission.name_and_surname)
 async def responsenameandsurname(message: types.Message, state = FSMContext):
     async with state.proxy() as data:
         data['name_and_surname'] = message.text
