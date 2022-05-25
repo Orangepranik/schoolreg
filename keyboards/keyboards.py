@@ -14,3 +14,6 @@ def yesornorequest():
     buttons = ['Так', 'Ні']
     statick_keyboard.add(*buttons)
     return statick_keyboard
+
+
+def error_in_questionary():

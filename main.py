@@ -108,7 +108,7 @@ async def requestlive(message: types.Message, state: FSMContext):
     if lenadress >= 10 and lenadress <= 30:
         async with state.proxy() as data2:
             data2['addres_of_residence'] = message.text
-        await message.reply("Записано в анкету успішно")
+        await message.reply("Записано в анкету успішно",reply_markup=)
         await message.answer("Введіть ПІБ вступника:")
         await apllication_for_admission.next()
     else:
