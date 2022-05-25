@@ -17,3 +17,14 @@ def yesornorequest():
 
 
 def error_in_questionary():
+    statik_keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    button = ["Змінити анкету"]
+    statik_keyboard.add(*button)
+    return statik_keyboard
+
+
+def correct_answers():
+    statick_keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    buttons = ['1', '2', '3', '4', '5']
+    statick_keyboard.add(*buttons)
+    return statick_keyboard

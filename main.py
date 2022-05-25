@@ -147,13 +147,26 @@ async def requestoldincomminguser(message: types.Message, state: FSMContext):
         async with state.proxy() as data4:
             data4['how_old_is_incomming'] = message.text
         await message.answer('Ви заповнили анкету\nАнкета відправлена до адміністраторів')
-    await message.answer(f"Ваша анкета:\nВаш ПІБ:{data4['name_and_surname']}"
-                         f"\nВаш номер телефону: {data4['phonenumber']}"
-                         f"Ваше місце проживання: {data4['addres_of_residence']}"
-                         f"ПІБ вступника: {data4['name_and_surname_of_incomming_user']}"
-                         f"Вік вступника: {data4['how_old_is_incomming']}"
-                         )
-    await state.finish()
+    await message.answer(f"Ваша анкета:\n1. Ваш ПІБ:{data4['name_and_surname']}"
+                         f"\n2. Ваш номер телефону: {data4['phonenumber']}"
+                         f"3. Ваше місце проживання: {data4['addres_of_residence']}"
+                         f"4. ПІБ вступника: {data4['name_and_surname_of_incomming_user']}"
+                         f"5. Вік вступника: {data4['how_old_is_incomming']}"
+                         f'Допустили помилку в анкеті?,-просто нажміть на кнопку Змінити анкету',reply_markup=error_in_questionary())
+
+
+@dp.message_handler(Text(equals='Змінити анкету'))
+async def correct_questionary(message: types.Message):
+    await message.reply('Виберіть який пункт хочете змінити',reply_markup=correct_answers())
+@dp.message_handler(Text(equals='1'))
+async def correct_1(message: types.Message):
+
+
+@dp.message_handler(Text(equals='2'))
+@dp.message_handler(Text(equals='3'))
+@dp.message_handler(Text(equals='4'))
+@dp.message_handler(Text(equals='5'))
+
 
 # @dp.message_handler(apllication_for_admission.name_and_surname)
 # async def responsenameandsurname(message: types.Message, state = FSMContext)
