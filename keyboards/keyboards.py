@@ -10,7 +10,7 @@ def returntomenu():
     statick_keyboard.add(*buttons)
     return statick_keyboard
 def yesornorequest():
-    statick_keyboard = types.ReplyKeyboardMarkup()
+    statick_keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     buttons = ['Так', 'Ні']
     statick_keyboard.add(*buttons)
     return statick_keyboard
