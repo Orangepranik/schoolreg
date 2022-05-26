@@ -108,7 +108,7 @@ async def requestlive(message: types.Message, state: FSMContext):
     if lenadress >= 10 and lenadress <= 30:
         async with state.proxy() as data2:
             data2['addres_of_residence'] = message.text
-        await message.reply("Записано в анкету успішно",reply_markup=)
+        await message.reply("Записано в анкету успішно")
         await message.answer("Введіть ПІБ вступника:")
         await apllication_for_admission.next()
     else:
@@ -160,9 +160,41 @@ async def correct_questionary(message: types.Message):
     await message.reply('Виберіть який пункт хочете змінити',reply_markup=correct_answers())
 @dp.message_handler(Text(equals='1'))
 async def correct_1(message: types.Message):
+    await apllication_for_admission.name_and_surname.set()
+    await message.reply('Введіть ПІБ вступника')
 
+@dp.message_handler(state=apllication_for_admission.name_and_surname)
+async def correct_1_1(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+            data['name_and_surname'] = message.text
+        for check_data in data['name_and_surname']:
+            if check_data == numberslist:
+                if len(data['name_and_surname']) <= 9 and len(data['name_and_surname']) >= 40:
+                    await message.answer("Введіть ще раз ")
+                    await apllication_for_admission.name_and_surname.reset()
+        else:
+            async with state.proxy() as data:
+                data['name_and_surname'] = message.text
+        await message.reply("Ваш ПІБ успішно змінено")
 
 @dp.message_handler(Text(equals='2'))
+async def correct_2(message: types.Message):
+    await apllication_for_admission.phone_number.set()
+    await message.reply('Введіть ваш номер телефону:\nЗаписувати у такому форматі: +380....')
+@dp.message_handler(state=apllication_for_admission.phone_number)
+async def responsephonenumber(message: types.Message, state = FSMContext):
+    async with state.proxy() as data1:
+        data1['phonenumber'] = message.text
+    replacephonenumber = data1['phonenumber'].replace("+380", '')
+    lenphonenumber = len(replacephonenumber)
+    print(replacephonenumber)
+    numbers = [0,1,2,3,4,5,6,7,8,9]
+    for check_nubmer in replacephonenumber:
+        if check_nubmer==numbers:
+            await message.reply("Ваш номер телефону успішно змінено")
+    else:
+        await message.answer("Введіть корректно номер:\nПриклад:+380932439249239")
+        await apllication_for_admission.phone_number.reset()
 @dp.message_handler(Text(equals='3'))
 @dp.message_handler(Text(equals='4'))
 @dp.message_handler(Text(equals='5'))
